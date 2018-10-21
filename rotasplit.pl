@@ -34,6 +34,8 @@ sub main {
     my @doctors = split(',',$doctorsList);
     
     foreach (@doctors) {
+        $line = <INPUT>;
+        print OUTF $line;
         while($line = <INPUT>)
             {
             my @line = split(',', $line);
