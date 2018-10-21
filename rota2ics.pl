@@ -40,22 +40,17 @@ sub main {
     chomp($shiftList);
     my @shiftList = split(',',$shiftList);
     
-    print "Shift Patterns:\n";
-    foreach (@shiftList){
-        print $_."\n";
-        }
     
     foreach (@shiftList) {
         my @l = split(';',$_);
-        foreach (@l) {
-            print $_."\n";
-            }
         
         $shiftStart{$l[0]} = $l[1];
         $shiftLength{$l[0]} = $l[2];
         }
     
     close INPUT;
+    
+
     
     foreach (@doctors) {
         open(INPUT, $filename) or die "Cannot open $filename";
@@ -64,6 +59,8 @@ sub main {
         
         open(OUTF,">>",$outputDirectoryName."/".$_.".ics") or die "Cannot open outputfile";
         print OUTF "BEGIN:VCALENDAR\nVERSION:2.0\n";
+        
+        my $i=0;
                         
         while($line = <INPUT>)
             {
@@ -76,7 +73,10 @@ sub main {
                 my $startTime = `date -I'seconds' -d "$line[1] $shiftStart{$shiftPattern}" `;
                 chomp($startTime);
                 
-                print OUTF "BEGIN:VEVENT\nUID:$line[2]\n";
+                print OUTF "BEGIN:VEVENT\n";
+                print OUTF "UID:$line[2]-".$i."-".`date -I -d "$shiftStart"`;
+                $i++;
+                print OUTF "ORGANISER:XYZ\n";
                 print OUTF "DTSTAMP:".`date "+%G%m%d"`;
                 print OUTF "SUMMARY:OOH Shift\n";
                 print OUTF "DTSTART:".`date -d $startTime "+%Y%m%dT%H%M%S"`;
