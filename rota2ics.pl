@@ -10,7 +10,7 @@
 sub main {
     if (scalar(@ARGV) < 1) {
         print "\nrota2ics.pl -- - provides ical files from a provided CSV file containing dates, day of week, name of doctor and info on BH or else.\n";
-        print "Syntax: rota2ical.pl csvfile [-d output-directory>]";
+        print "Syntax: rota2ics.pl csvfile [-d output-directory>]";
         print "- Arguments in braces < > are required. Arguments in brackets [ ] are optional.\n";
         print "- If no -d option is specified <STDOUT> is used.\n";
         exit (-1);
@@ -62,9 +62,8 @@ sub main {
         my $line = <INPUT>; # read and drop first line with doctors' list
         $line=<INPUT>;#drop next one too with shift patterns
         
-        open(OUTF1,">>",$outputDirectoryName."/".$_.".csv") or die "Cannot open outputfile";
-        open(OUTF2,">>",$outputDirectoryName."/".$_.".ics") or die "Cannot open outputfile";
-        print OUTF2 "BEGIN:VCALENDAR\nVERSION:2.0\n";
+        open(OUTF,">>",$outputDirectoryName."/".$_.".ics") or die "Cannot open outputfile";
+        print OUTF "BEGIN:VCALENDAR\nVERSION:2.0\n";
                         
         while($line = <INPUT>)
             {
@@ -72,27 +71,25 @@ sub main {
             my @line = split(',', $line);
             my $shiftPattern = $line[3];
             if ($_ eq @line[2]) {
-                print OUTF1 $line;
                 
                 $line[1] =~s/^(\d{2})\/(\d{2})\/(\d{2})/$2\/$1\/$3/;
                 my $startTime = `date -I'seconds' -d "$line[1] $shiftStart{$shiftPattern}" `;
                 chomp($startTime);
                 
-                print OUTF2 "BEGIN:VEVENT\nUID:$line[2]\n";
-                print OUTF2 "DTSTAMP:".`date "+%G%m%d"`;
-                print OUTF2 "SUMMARY:OOH Shift\n";
-                print OUTF2 "DTSTART:".`date -d $startTime "+%Y%m%dT%H%M%S"`;
-                print OUTF2 "DTEND:".`date -d "$startTime + $shiftLength{$shiftPattern} hours" "+%Y%m%dT%H%M%S"`;
-                print OUTF2 "DESCRIPTION:Reminder\n";
-                print OUTF2 "BEGIN:VALARM\nACTION:DISPLAY\nDESCRIPTION:REMINDER\nTRIGGER:-PT24H\nEND:VALARM\n";
-                print OUTF2 "END:VEVENT\n";
+                print OUTF "BEGIN:VEVENT\nUID:$line[2]\n";
+                print OUTF "DTSTAMP:".`date "+%G%m%d"`;
+                print OUTF "SUMMARY:OOH Shift\n";
+                print OUTF "DTSTART:".`date -d $startTime "+%Y%m%dT%H%M%S"`;
+                print OUTF "DTEND:".`date -d "$startTime + $shiftLength{$shiftPattern} hours" "+%Y%m%dT%H%M%S"`;
+                print OUTF "DESCRIPTION:Reminder\n";
+                print OUTF "BEGIN:VALARM\nACTION:DISPLAY\nDESCRIPTION:REMINDER\nTRIGGER:-PT24H\nEND:VALARM\n";
+                print OUTF "END:VEVENT\n";
                 
                 }
             }    
         close(INPUT);
-        close(OUTF1);
-        print OUTF2 "END:VCALENDAR\n";
-        close(OUTF2);        
+        print OUTF "END:VCALENDAR\n";
+        close(OUTF);        
         }
 }
 
