@@ -18,7 +18,7 @@ sub main {
 
     my $filename = $ARGV[0];
     my $nextarg = 1;
-    my $outputDirectoryName ="./";
+    my $outputDirectoryName =".";
     
     if ($ARGV[$nextarg] eq "-d") {
         $outputDirectoryName = "$ARGV[$nextarg+1]";
@@ -30,10 +30,17 @@ sub main {
     open(INPUT, $filename) or die "Cannot open $filename";
     
     my $doctorsList = <INPUT>;
-    chomp($doctorsList);    
+    chomp($doctorsList);
+    
     my @doctors = split(',',$doctorsList);
     
     foreach (@doctors) {
+        seek INPUT, 0, 0;
+
+        $line = <INPUT>;
+    
+        open(OUTF,">>",$outputDirectoryName."/".$_.".csv") or die "Cannot open outputfile";
+
         $line = <INPUT>;
         print OUTF $line;
         while($line = <INPUT>)
@@ -43,9 +50,9 @@ sub main {
                 print OUTF $line;
                 }
             }    
-        close(INPUT);
         close(OUTF);
         }
+    close INPUT;
 }
 
 main();
