@@ -28,31 +28,27 @@ sub main {
     
 
     open(INPUT, $filename) or die "Cannot open $filename";
+    chomp(my @lines = <INPUT>);
+    close INPUT;
     
-    my $doctorsList = <INPUT>;
-    chomp($doctorsList);
+    my @doctors = split(',',$lines[0]);
+    @lines = @lines[ 1 .. $#lines ];
     
-    my @doctors = split(',',$doctorsList);
-    
-    foreach (@doctors) {
-        seek INPUT, 0, 0;
+    foreach $doctor (@doctors) {
 
-        $line = <INPUT>;
-    
-        open(OUTF,">>",$outputDirectoryName."/".$_.".csv") or die "Cannot open outputfile";
-
-        $line = <INPUT>;
-        print OUTF $line;
-        while($line = <INPUT>)
-            {
+        open(OUTF,">>",$outputDirectoryName."/".$doctor.".csv") or die "Cannot open outputfile";
+        
+        print OUTF $doctor."\n";
+        
+        foreach $line (@lines){
+            
             my @line = split(',', $line);
-            if ($_ eq @line[2]) {
-                print OUTF $line;
+            if ($doctor eq @line[2]) {
+                print OUTF $line."\n";
                 }
             }    
         close(OUTF);
         }
-    close INPUT;
 }
 
 main();

@@ -28,18 +28,15 @@ sub main {
     
 
     open(INPUT, $filename) or die "Cannot open $filename";
+    chomp(my @lines = <INPUT>);
+    close INPUT;
+            
+    my @doctors = split(',',$lines[0]);
     
-    my $doctorsList = <INPUT>;
-    chomp($doctorsList);    
-    my @doctors = split(',',$doctorsList);
-    
-    my $shiftList = <INPUT>;
     my %shiftStart;
     my %shiftLength;
     
-    chomp($shiftList);
-    my @shiftList = split(',',$shiftList);
-    
+    my @shiftList = split(',',$lines[1]);
     
     foreach (@shiftList) {
         my @l = split(';',$_);
@@ -48,23 +45,18 @@ sub main {
         $shiftLength{$l[0]} = $l[2];
         }
     
-    close INPUT;
-    
-
+    @lines = @lines[ 2 .. $#lines ];
     
     foreach (@doctors) {
-        open(INPUT, $filename) or die "Cannot open $filename";
-        my $line = <INPUT>; # read and drop first line with doctors' list
-        $line=<INPUT>;#drop next one too with shift patterns
         
         open(OUTF,">>",$outputDirectoryName."/".$_.".ics") or die "Cannot open outputfile";
         print OUTF "BEGIN:VCALENDAR\nVERSION:2.0\n";
         
         my $i=0;
                         
-        while($line = <INPUT>)
-            {
-            chomp($line);
+        foreach $line (@lines) {
+            
+            
             my @line = split(',', $line);
             my $shiftPattern = $line[3];
             if ($_ eq @line[2]) {
@@ -87,7 +79,7 @@ sub main {
                 
                 }
             }    
-        close(INPUT);
+
         print OUTF "END:VCALENDAR\n";
         close(OUTF);        
         }
