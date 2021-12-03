@@ -32,13 +32,16 @@ sub main {
     close INPUT;
     
     my @doctors = split(',',$lines[0]);
-    @lines = @lines[ 1 .. $#lines ];
+    my $plan = $lines[1];
+    
+    @lines = @lines[ 2 .. $#lines ];
     
     foreach $doctor (@doctors) {
 
         open(OUTF,">>",$outputDirectoryName."/".$doctor.".csv") or die "Cannot open outputfile";
         
         print OUTF $doctor."\n";
+        print OUTF $plan."\n";
         
         foreach $line (@lines){
             
