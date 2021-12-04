@@ -10,7 +10,7 @@
 sub main {
     if (scalar(@ARGV) < 1) {
         print "\nrotasplit.pl -- - provides individual cvs files from a provided CSV file containing dates, day of week, name of staff and info on shiftpattern or else.\n";
-        print "Syntax: rotasplit.pl csvfile [-d output-directory>]";
+        print "Syntax: rotasplit.pl csvfile [-d <output-directory>]";
         print "- Arguments in braces < > are required. Arguments in brackets [ ] are optional.\n";
         print "- If no -d option is specified <STDOUT> is used.\n";
         exit (-1);
