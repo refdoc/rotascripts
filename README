@@ -1,10 +1,12 @@
 This collection of scripts is designed to help create and administer rotas for staff
 
-rota.csv shows the format for a sample rota.
+rotasample.csv shows the format for a sample rota.
 
 The first line has a list of the staff members
 The second line has a list of shiftpatterns, start times and length in hours and minutes of each pattern
 The following lines contain rota shifts - day of week, date, name of shift pattern. 
 
 rota2ics.pl produces from a provided cvs file similar to the provided rota.cvs sample ics and individual cvs files. 
+swap2ics.pl produces a cancellation ics file and a new ics file for each swap. 
 
+ 
